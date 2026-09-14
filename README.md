@@ -6,13 +6,13 @@
 
 <p align="center">
   <a href="https://github.com/SanGraphic/PostVoidMobile/releases"><img src="https://img.shields.io/github/v/release/SanGraphic/PostVoidMobile?include_prereleases&label=Latest%20Release&color=brightgreen" alt="Release"></a>
-  <a href="https://store.steampowered.com/app/1288700/POST_VOID/"><img src="https://img.shields.io/badge/Steam%20Upstream-v1.4C%20Parity-blue" alt="Upstream Version"></a>
+  <a href="https://store.steampowered.com/app/1285670/Post_Void/"><img src="https://img.shields.io/badge/Steam%20Upstream-v1.4C%20Parity-blue" alt="Upstream Version"></a>
   <a href="https://github.com/SanGraphic/PostVoidMobile/actions"><img src="https://img.shields.io/badge/Nightly%20Builds-Passing-success" alt="Nightly Builds"></a>
   <a href="#graphical-api--hardware-requirements"><img src="https://img.shields.io/badge/Performance-Native%20Full%20Speed%20(0%20Emulation)-purple" alt="Native Full Speed"></a>
   <a href="#credits--acknowledgements"><img src="https://img.shields.io/badge/Touch%20Graphics-Hand--Made%20by%20%40SanGraphic-orange" alt="Touch Graphics"></a>
 </p>
 
-An authentic, ultra-high-performance mobile port of **[POST VOID](https://store.steampowered.com/app/1288700/POST_VOID/)** for **Android** (with an **iOS release coming soon!**).
+An authentic, ultra-high-performance mobile port of **[POST VOID](https://store.steampowered.com/app/1285670/Post_Void/)** for **Android** (with an **iOS release coming soon!**).
 
 Built directly upon native mobile architectures with **zero emulation overhead**, delivering 1:1 gameplay parity with the latest upstream Steam release (**v1.4C**), smooth full-speed performance, custom hand-crafted touch controls with a real-time HUD editor, and full controller wired or wireless support.
 
@@ -23,15 +23,15 @@ Built directly upon native mobile architectures with **zero emulation overhead**
 > **Note:** This project uses a Bring Your Own Data (BYOD) model. You must own the original PC game on Steam. No copyrighted game assets are hosted or distributed in this repository.
 
 <p align="center">
-  <a href="https://store.steampowered.com/app/1288700/POST_VOID/">
-    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1288700/header.jpg" alt="POST VOID on Steam" width="460">
+  <a href="https://store.steampowered.com/app/1285670/Post_Void/">
+    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/1285670/header.jpg" alt="POST VOID on Steam" width="460">
     <br>
     <img src="https://img.shields.io/badge/BUY%20ON%20STEAM-POST%20VOID-171a21?style=for-the-badge&logo=steam&logoColor=white" alt="Buy POST VOID on Steam">
   </a>
 </p>
 
 1. **Download latest release and install APK**: Grab the latest release APK from the [Releases](https://github.com/SanGraphic/PostVoidMobile/releases) page.
-2. **Buy Post Void on Steam and copy your game files**: Buy [POST VOID on Steam](https://store.steampowered.com/app/1288700/POST_VOID/) and copy your Steam game installation directory from your PC (`.../steamapps/common/Post Void`) into your device storage (e.g. `/sdcard/postvoid` or `Download/postvoid`).
+2. **Buy Post Void on Steam and copy your game files**: Buy [POST VOID on Steam](https://store.steampowered.com/app/1285670/Post_Void/) and copy your Steam game installation directory from your PC (`.../steamapps/common/Post Void`) into your device storage (e.g. `/sdcard/postvoid` or `Download/postvoid`).
 3. **Open app and grant storage access**: Launch the app on your device and grant storage permissions when prompted so it can access your game files.
 4. **Select game folder & play**: Tap "AUTO-PATCH & LAUNCH" or select your game folder/`data.win` manually. The on-the-fly engine patches the game files in seconds and boots straight into POST VOID.
 
@@ -130,7 +130,7 @@ This repository features an automated GitHub Actions CI pipeline that builds the
 
 ## Credits & Acknowledgements
 
-* **[YCJY Games](https://twitter.com/WhosYCJY)** & **[Super Rare Games](https://superraregames.com/)**: Original creators and publishers of **POST VOID**. Please support them by purchasing the original game on **[Steam](https://store.steampowered.com/app/1288700/POST_VOID/)**!
+* **[YCJY Games](https://twitter.com/WhosYCJY)** & **[Super Rare Games](https://superraregames.com/)**: Original creators and publishers of **POST VOID**. Please support them by purchasing the original game on **[Steam](https://store.steampowered.com/app/1285670/Post_Void/)**!
 * **[@SanGraphic](https://github.com/SanGraphic)**: Project creator, touch UI & graphics designer, mobile port lead.
 * **GPT-6 Astra**: Engineering assistance, native ARM64 hook design, and xdelta3 integration.
 
