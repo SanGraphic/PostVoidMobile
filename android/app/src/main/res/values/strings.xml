@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Post Void</string>
+    <string name="byod_title">Steam Game Data Required</string>
+    <string name="byod_message">Please place your legal Steam copy of Post Void files (data.win and audio/font assets) into the following directory:\n\n%1$s\n\nOnce copied, press Verify &amp; Launch.</string>
+    <string name="byod_verify">Verify &amp; Launch</string>
+    <string name="byod_open_folder">Open Folder</string>
+    <string name="byod_not_found">data.win was not found in the app directory. Please copy it and try again.</string>
+    <string name="byod_success">data.win verified successfully! Launching engine...</string>
+</resources>

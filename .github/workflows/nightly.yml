@@ -1,0 +1,87 @@
+name: Weekly Nightly Build & Release
+
+on:
+  schedule:
+    # Runs every Sunday at 00:00 UTC (Weekly)
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'android/**'
+      - '.github/workflows/nightly.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & Publish Nightly APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Android SDK & NDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android NDK & CMake
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "ndk;26.1.10909125" "cmake;3.22.1"
+
+      - name: Grant Execute Permission to Gradle Wrapper
+        run: chmod +x ./android/gradlew
+
+      - name: Build BYOD Release APK
+        working-directory: ./android
+        run: ./gradlew assembleByodRelease --no-daemon --stacktrace
+
+      - name: Prepare Release Artifacts
+        run: |
+          mkdir -p release-output
+          cp android/app/build/outputs/apk/byod/release/app-byod-release.apk release-output/PostVoid-Mobile-BYOD-Nightly.apk
+          sha256sum release-output/PostVoid-Mobile-BYOD-Nightly.apk > release-output/SHA256SUMS.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PostVoid-Mobile-BYOD-Nightly
+          path: release-output/*
+          if-no-files-found: error
+
+      - name: Publish Nightly Release
+        uses: softprops/action-gh-release@v2
+        if: github.ref == 'refs/heads/main' || github.event_name == 'schedule'
+        with:
+          tag_name: nightly
+          name: "PostVoid Mobile — Weekly Nightly Build"
+          body: |
+            ## PostVoid Mobile Weekly Nightly Build
+            
+            This is an automated weekly build of **PostVoid Mobile** compiled from the latest source.
+            
+            ### Quick Start Instructions:
+            1. **Download & Install**: Grab `PostVoid-Mobile-BYOD-Nightly.apk` below.
+            2. **Buy & Copy Steam Files**: Own [POST VOID on Steam](https://store.steampowered.com/app/1288700/POST_VOID/) and copy your PC game folder into your device storage (e.g. `/sdcard/postvoid`).
+            3. **Grant Storage Access**: Open the app and grant storage permission.
+            4. **Auto-Patch & Launch**: Tap "Auto-Patch & Launch" to generate your container and start playing!
+            
+            ### Integrity & Checksums:
+            Verify the SHA256 checksum in `SHA256SUMS.txt`.
+          draft: false
+          prerelease: true
+          files: |
+            release-output/PostVoid-Mobile-BYOD-Nightly.apk
+            release-output/SHA256SUMS.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

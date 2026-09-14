@@ -1,0 +1,81 @@
+# ── Version Control Ignore: PostVoid Mobile ───────────────────────────────────
+
+# Proprietary Game Files & Asset Dumps (BYOD Model - NEVER commit copyrighted assets)
+Post Void Steam/
+Post Void Steam/**
+android/app/src/standalone/assets/game.droid
+byod_storage/
+decompiled_project/
+decompiled_gml/
+bytecode_asm/
+stablebranchapk/
+stablebranchbackupdonttouch/
+stablebranchapk.zip
+postvoidportmasterport/
+vita_port/
+gmloader-next/
+
+# Third-Party Tool Binaries & Extraction Dumps
+UndertaleModTool*/
+tools/umt_extracted/
+*.exe
+*.dll
+tools/xdelta3*.exe
+xdelta3.exe
+
+# C# / .NET Build Artifacts
+**/bin/
+**/obj/
+# Scratch Scripts in Root
+/*.cs
+/*.csx
+
+# Built Packages & Output Binaries
+*.apk
+*.aab
+*.idsig
+output_apks/
+release/
+release-output/
+
+# Android / Gradle Build Artifacts
+.gradle/
+**/build/
+android/.gradle/
+android/app/build/
+android/.cxx/
+android/app/.cxx/
+local.properties
+.externalNativeBuild/
+
+# Logs, Dumps & Temp Files
+*.log
+*.tmp
+*.bak
+*.diff
+*.patch
+scratch/
+.tempmediaStorage/
+
+# Screenshots & Scratch Images from Device Testing
+scratch*.png
+screen*.png
+byod_*.png
+authentic_*.png
+menu_*.png
+perm_*.png
+shoot_tap.png
+screenshot*.png
+icon_res_*.png
+icon_*.png
+steam_exe_icon.png
+
+# IDE / Editor Files
+.idea/
+.vscode/
+*.iml
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
