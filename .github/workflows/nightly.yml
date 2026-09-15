@@ -8,9 +8,7 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'android/**'
-      - '.github/workflows/nightly.yml'
+
 
 permissions:
   contents: write
@@ -72,7 +70,7 @@ jobs:
             
             ### Quick Start Instructions:
             1. **Download & Install**: Grab `PostVoid-Mobile-BYOD-Nightly.apk` below.
-            2. **Buy & Copy Steam Files**: Own [POST VOID on Steam](https://store.steampowered.com/app/1288700/POST_VOID/) and copy your PC game folder into your device storage (e.g. `/sdcard/postvoid`).
+            2. **Buy & Copy Steam Files**: Own [POST VOID on Steam](https://store.steampowered.com/app/1285670/Post_Void/) and copy your PC game folder into your device storage (e.g. `/sdcard/postvoid`).
             3. **Grant Storage Access**: Open the app and grant storage permission.
             4. **Auto-Patch & Launch**: Tap "Auto-Patch & Launch" to generate your container and start playing!
             

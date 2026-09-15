@@ -531,10 +531,30 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             for (id in deviceIds) {
                 val dev = InputDevice.getDevice(id) ?: continue
                 if (dev.isVirtual) continue
+
+                // Exclude sensors, touchscreens, and styluses that falsely report joystick/gamepad axes
+                val name = dev.name?.lowercase(Locale.ROOT) ?: ""
+                if (name.contains("sensor") || name.contains("touch") || name.contains("pen") || name.contains("stylus")) {
+                    continue
+                }
+
                 val sources = dev.sources
-                val isGamepad = (sources and InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD ||
-                                (sources and InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK
-                if (isGamepad) {
+                val isGamepadSource = (sources and InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD
+                val isJoystickSource = (sources and InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK
+                if (!isGamepadSource && !isJoystickSource) continue
+
+                // Strictly verify the device actually has physical gamepad action buttons
+                val hasKeys = dev.hasKeys(
+                    KeyEvent.KEYCODE_BUTTON_A,
+                    KeyEvent.KEYCODE_BUTTON_B,
+                    KeyEvent.KEYCODE_BUTTON_X,
+                    KeyEvent.KEYCODE_BUTTON_Y,
+                    KeyEvent.KEYCODE_BUTTON_START,
+                    KeyEvent.KEYCODE_BUTTON_SELECT,
+                    KeyEvent.KEYCODE_BUTTON_L1,
+                    KeyEvent.KEYCODE_BUTTON_R1
+                )
+                if (hasKeys.any { it }) {
                     return true
                 }
             }

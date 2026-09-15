@@ -406,17 +406,13 @@ static void gh_clear_ghost_io() {
         return;
     }
 
-    // Touch Mode: Populate synthetic mouse buttons into GameMaker internal IO buffers
-    if (io_btn_down && io_btn_press) {
-        bool m_down = false;
-        bool m_press = false;
-        if (is_in_game_now()) {
-            m_down  = gh_gamepads[0].step_held[7];
-            m_press = gh_gamepads[0].step_pressed[7];
-        } else {
-            m_down  = gh_touch_active.load(std::memory_order_relaxed);
-            m_press = gh_touch_step_pressed;
-        }
+    // Touch Mode: Populate synthetic mouse buttons into GameMaker internal IO buffers ONLY when in menus/UI
+    // In gameplay (is_in_game_now), touch buttons act exclusively as native gamepad controls (RT/A/LT/X).
+    // Injecting mouse clicks in gameplay causes obj_input_controller to flip global.input_activeDevice to 0 (Mouse/KB),
+    // which drops the analog joystick and freezes player movement while shooting.
+    if (io_btn_down && io_btn_press && !is_in_game_now()) {
+        bool m_down  = gh_touch_active.load(std::memory_order_relaxed);
+        bool m_press = gh_touch_step_pressed;
 
         if (m_down) {
             io_btn_down[1] = 1;
@@ -567,11 +563,9 @@ static bool is_mouse_button_down_synthetic(int btn) {
         return false;
     }
     if (is_in_game_now()) {
-        // In gameplay: ONLY dedicated Shoot button (btn 7 / RT) counts as mouse button down!
-        // Looking around / swiping display / virtual joystick NEVER shoots or left clicks.
-        if (btn == 1 || btn == -1) {
-            return gh_gamepads[0].step_held[7];
-        }
+        // In gameplay: Firing is handled natively via gamepad_button_check (RT / btn 7).
+        // Reporting mouse down here tricks obj_input_controller into switching to PC Mouse & Keyboard mode,
+        // which disables gamepad analog movement and freezes the player in place.
         return false;
     } else {
         // In menus / UI / stats / victory / death:
@@ -587,10 +581,7 @@ static bool is_mouse_button_pressed_synthetic(int btn) {
         return false;
     }
     if (is_in_game_now()) {
-        // In gameplay: ONLY dedicated Shoot button (btn 7 / RT) press triggers shoot
-        if (btn == 1 || btn == -1) {
-            return gh_gamepads[0].step_pressed[7];
-        }
+        // In gameplay: Handled natively via gamepad_button_check_pressed (RT / btn 7).
         return false;
     } else {
         // In menus / UI: Tapping screen confirms menu selection
@@ -606,9 +597,6 @@ static bool is_mouse_button_released_synthetic(int btn) {
         return false;
     }
     if (is_in_game_now()) {
-        if (btn == 1 || btn == -1) {
-            return gh_gamepads[0].step_released[7];
-        }
         return false;
     } else {
         if (btn == 1 || btn == -1) {
@@ -781,7 +769,7 @@ static void gh_mouse_check_button_released_common(RValue& ret, CInstance*, CInst
 #define F_GAMEPAD_SET_VIBRATION_OFF         0x0047B750ULL
 #define F_GAMEPAD_SET_COLOUR_OFF            0x0047B19CULL
 
-#define F_KEYBOARD_CHECK_OFF                0x0044F24CULL
+#define F_KEYBOARD_CHECK_OFF                0x0044F044ULL
 #define F_CHECK_MOUSE_BUTTON_OFF            0x00486260ULL
 #define F_CHECK_MOUSE_BUTTON_PRESSED_OFF    0x004862ACULL
 #define F_CHECK_MOUSE_BUTTON_RELEASED_OFF   0x004862F8ULL
