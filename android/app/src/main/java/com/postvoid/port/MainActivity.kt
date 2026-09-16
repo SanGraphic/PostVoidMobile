@@ -61,6 +61,7 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
     private var frameCount = 0
     private var renderedFrames = 0
     private var lastFpsUpdateTime = System.nanoTime()
+    private var gamepadCheckInterval = 120
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +76,12 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             }
         }
 
-        // Enable 120Hz display refresh rate on supported devices (OnePlus 12, etc.)
+        // Enable high refresh rate on supported displays
         enableHighRefreshRate()
+
+        // Register input device listener for reactive physical gamepad connection handling
+        inputManager = getSystemService(Context.INPUT_SERVICE) as? InputManager
+        inputManager?.registerInputDeviceListener(inputDeviceListener, null)
 
         // Initialize active file logger for debug sessions (writes to game.log)
         GameLogger.init(this)
@@ -183,11 +188,13 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
     }
 
     private fun enableHighRefreshRate() {
+        var refreshRate = 60f
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             val modes = display?.supportedModes ?: emptyArray()
             val highRefreshMode = modes.maxByOrNull { it.refreshRate }
             if (highRefreshMode != null) {
-                Log.i("MainActivity", "Requesting 120Hz display mode: ID=${highRefreshMode.modeId}, ${highRefreshMode.refreshRate}Hz")
+                refreshRate = highRefreshMode.refreshRate
+                Log.i("MainActivity", "Requesting display mode: ID=${highRefreshMode.modeId}, ${highRefreshMode.refreshRate}Hz")
                 window.attributes = window.attributes.apply {
                     preferredDisplayModeId = highRefreshMode.modeId
                 }
@@ -197,11 +204,14 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             val modes = windowManager.defaultDisplay.supportedModes
             val maxMode = modes.maxByOrNull { it.refreshRate }
             if (maxMode != null) {
+                refreshRate = maxMode.refreshRate
                 window.attributes = window.attributes.apply {
                     preferredDisplayModeId = maxMode.modeId
                 }
             }
         }
+        // 120 frames for 60Hz display, 60 frames for 120Hz display
+        gamepadCheckInterval = if (refreshRate >= 100f) 60 else 120
     }
 
     private fun calculateTargetResolution(): Pair<Int, Int> {
@@ -260,7 +270,8 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             try {
-                glSurfaceView.holder.surface.setFrameRate(120.0f, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT)
+                val refreshRate = display?.refreshRate ?: 60.0f
+                glSurfaceView.holder.surface.setFrameRate(refreshRate, Surface.FRAME_RATE_COMPATIBILITY_DEFAULT)
             } catch (_: Throwable) {}
         }
 
@@ -317,8 +328,8 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                     Log.i("MainActivity", "Frame $frameCount: Process returned $ret, size=${surfaceWidth}x${surfaceHeight}")
                 }
 
-                // Sync gamepad connection and refresh touch overlay state every 10 frames
-                if (frameCount % 10 == 0) {
+                // Sync gamepad connection and refresh touch overlay state every 120 frames (60Hz) or 60 frames (120Hz)
+                if (frameCount % gamepadCheckInterval == 0) {
                     val hasGamepad = isPhysicalGamepadConnected()
                     GamepadBridge.setControllerConnected(hasGamepad)
                     val targetVis = if (hasGamepad) View.GONE else View.VISIBLE
@@ -329,6 +340,7 @@ class MainActivity : AppCompatActivity(), GLSurfaceView.Renderer {
                     }
                     touchOverlayView?.postInvalidate()
                 }
+
             } catch (e: Throwable) {
                 Log.e("MainActivity", "Error in RunnerJNILib.Process: ${e.message}", e)
             }

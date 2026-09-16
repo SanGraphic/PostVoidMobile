@@ -51,11 +51,25 @@ class TouchOverlayView @JvmOverloads constructor(
         val keyCode: Int,
         val scanCode: Int,
         var pointerId: Int = -1,
-        var origBitmap: Bitmap? = null
+        var origBitmap: Bitmap? = null,
+        var scaledBitmap: Bitmap? = null
     ) {
         fun getPixelX(width: Int): Float = normX * width
         fun getPixelY(height: Int): Float = normY * height
         fun getPixelRadius(density: Float): Float = baseRadiusDp * sizeScale * density
+
+        fun updateScaledBitmap(density: Float) {
+            val bmp = origBitmap ?: return
+            val r = getPixelRadius(density)
+            val targetSize = max(32, (r * 2f).toInt())
+            if (scaledBitmap == null || scaledBitmap?.width != targetSize || scaledBitmap?.height != targetSize) {
+                try {
+                    scaledBitmap = Bitmap.createScaledBitmap(bmp, targetSize, targetSize, true)
+                } catch (_: Throwable) {
+                    scaledBitmap = bmp
+                }
+            }
+        }
 
         fun contains(x: Float, y: Float, width: Int, height: Int, density: Float, extraSlop: Float = 0f): Boolean {
             val px = getPixelX(width)
@@ -225,6 +239,7 @@ class TouchOverlayView @JvmOverloads constructor(
         for (btn in buttons) {
             try {
                 btn.origBitmap = BitmapFactory.decodeResource(resources, btn.drawableRes)
+                btn.updateScaledBitmap(density)
             } catch (_: Throwable) {}
         }
     }
@@ -247,12 +262,14 @@ class TouchOverlayView @JvmOverloads constructor(
             btn.normX = prefs.getFloat("${btn.id}_x", btn.defaultNormX)
             btn.normY = prefs.getFloat("${btn.id}_y", btn.defaultNormY)
             btn.sizeScale = prefs.getFloat("${btn.id}_scale", 1.0f).coerceIn(0.5f, 2.0f)
+            btn.updateScaledBitmap(density)
         }
     }
 
     private fun resetToDefaults() {
         for (btn in buttons) {
             btn.resetToDefaults()
+            btn.updateScaledBitmap(density)
         }
         selectedButton = null
         saveLayout()
@@ -347,6 +364,7 @@ class TouchOverlayView @JvmOverloads constructor(
         val track = getSliderTrackRect(getSliderBarRect())
         val frac = ((touchX - track.left) / track.width()).coerceIn(0f, 1f)
         btn.sizeScale = (0.50f + frac * 1.50f).coerceIn(0.50f, 2.00f)
+        btn.updateScaledBitmap(density)
         invalidate()
     }
 
@@ -387,21 +405,26 @@ class TouchOverlayView @JvmOverloads constructor(
                 MotionEvent.ACTION_DOWN -> {
                     resetAllTouches()
                     handleGameTouchDown(pointerId, x, y)
+                    invalidate()
                 }
                 MotionEvent.ACTION_POINTER_DOWN -> {
                     handleGameTouchDown(pointerId, x, y)
+                    invalidate()
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    handleGameTouchMove(event)
+                    if (handleGameTouchMove(event)) {
+                        invalidate()
+                    }
                 }
                 MotionEvent.ACTION_POINTER_UP -> {
                     handleGameTouchUp(pointerId)
+                    invalidate()
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     resetAllTouches()
+                    invalidate()
                 }
             }
-            invalidate()
             return true
         }
 
@@ -447,6 +470,7 @@ class TouchOverlayView @JvmOverloads constructor(
                 if (minusRect.contains(x, y)) {
                     selectedButton?.let {
                         it.sizeScale = max(0.50f, it.sizeScale - 0.05f)
+                        it.updateScaledBitmap(density)
                         triggerHaptic()
                     }
                     return
@@ -454,6 +478,7 @@ class TouchOverlayView @JvmOverloads constructor(
                 if (plusRect.contains(x, y)) {
                     selectedButton?.let {
                         it.sizeScale = min(2.00f, it.sizeScale + 0.05f)
+                        it.updateScaledBitmap(density)
                         triggerHaptic()
                     }
                     return
@@ -551,12 +576,20 @@ class TouchOverlayView @JvmOverloads constructor(
         }
     }
 
-    private fun handleGameTouchMove(event: MotionEvent) {
+    private fun handleGameTouchMove(event: MotionEvent): Boolean {
+        var visualChanged = false
+
         if (movePointerId != -1) {
             val moveIdx = event.findPointerIndex(movePointerId)
             if (moveIdx >= 0) {
-                joyCurrentX = event.getX(moveIdx)
-                joyCurrentY = event.getY(moveIdx)
+                val newX = event.getX(moveIdx)
+                val newY = event.getY(moveIdx)
+                if (hypot(newX - joyCurrentX, newY - joyCurrentY) >= 1.0f * density) {
+                    joyCurrentX = newX
+                    joyCurrentY = newY
+                    visualChanged = true
+                }
+
                 val dx = joyCurrentX - joyOriginX
                 val dy = joyCurrentY - joyOriginY
                 val dist = hypot(dx, dy)
@@ -577,6 +610,7 @@ class TouchOverlayView @JvmOverloads constructor(
                 movePointerId = -1
                 GamepadBridge.onAxis(0, 0, 0f)
                 GamepadBridge.onAxis(0, 1, 0f)
+                visualChanged = true
             }
         }
 
@@ -603,9 +637,12 @@ class TouchOverlayView @JvmOverloads constructor(
                 if (pIdx < 0) {
                     btn.pointerId = -1
                     GamepadBridge.onButtonUp(0, btn.keyCode, btn.scanCode)
+                    visualChanged = true
                 }
             }
         }
+
+        return visualChanged
     }
 
     private fun handleGameTouchUp(pointerId: Int) {
@@ -666,7 +703,7 @@ class TouchOverlayView @JvmOverloads constructor(
                 canvas.scale(0.90f, 0.90f, px, py)
             }
 
-            val bmp = btn.origBitmap
+            val bmp = btn.scaledBitmap ?: btn.origBitmap
             if (bmp != null) {
                 dstRect.set(px - r, py - r, px + r, py + r)
                 canvas.drawBitmap(bmp, null, dstRect, paint)
