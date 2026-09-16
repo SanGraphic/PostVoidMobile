@@ -1,0 +1,75 @@
+name: "Device Compatibility Report"
+description: "Submit test results for your phone, tablet, or handheld console"
+title: "[Device]: "
+labels: ["compatibility", "device-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Help the community build an accurate device compatibility list! Report your hardware specs and gaming experience below.
+
+  - type: input
+    id: device_name
+    attributes:
+      label: "Device Name & Model"
+      description: "e.g., Xiaomi 9T, OnePlus 12, Poco F5, Retroid Pocket 4 Pro"
+      placeholder: "e.g., OnePlus 12 (CPH2581)"
+    validations:
+      required: true
+
+  - type: input
+    id: chipset_gpu
+    attributes:
+      label: "Processor / GPU"
+      description: "e.g., Snapdragon 8 Gen 3 (Adreno 750), Dimensity 1100 (Mali-G77 MC9)"
+      placeholder: "e.g., Snapdragon 8 Gen 3"
+    validations:
+      required: true
+
+  - type: input
+    id: resolution_refresh
+    attributes:
+      label: "Screen Resolution & Refresh Rate"
+      placeholder: "e.g., 2376x1080 @ 120Hz"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: compatibility_status
+    attributes:
+      label: "Overall Playability Status"
+      options:
+        - "Verified Perfect (Solid 60/120 FPS, No Glitches, Instant Touch/Gamepad)"
+        - "Playable (Minor Frame Drops or Rare Stutters)"
+        - "Playable with Workarounds (Required Setting Changes or Specific Storage Path)"
+        - "Unplayable (Crashes or Severe Performance Issues)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: touch_hud_performance
+    attributes:
+      label: "Touch HUD Performance"
+      options:
+        - "Silky Smooth (Zero Latency, Responsive Look & Joystick)"
+        - "Good (Playable, Slight Occasional Delay)"
+        - "Laggy (Stutters When Swiping or Moving Joystick)"
+        - "Not Tested (Gamepad Only)"
+    validations:
+      required: true
+
+  - type: input
+    id: gamepads_tested
+    attributes:
+      label: "Gamepads Tested"
+      placeholder: "e.g., Xbox Series Wireless Controller (Bluetooth), Gamesir X2 (USB-C), None (Touch only)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: "Additional Notes & Observations"
+      description: "Share any recommended settings, thermal behavior, or advice for users with the same device."
+    validations:
+      required: false

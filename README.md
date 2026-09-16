@@ -6,8 +6,9 @@
 
 <p align="center">
   <a href="https://github.com/SanGraphic/PostVoidMobile/releases"><img src="https://img.shields.io/github/v/release/SanGraphic/PostVoidMobile?include_prereleases&label=Latest%20Release&color=brightgreen" alt="Release"></a>
+  <a href="https://github.com/SanGraphic/PostVoidMobile/actions/workflows/nightly.yml"><img src="https://github.com/SanGraphic/PostVoidMobile/actions/workflows/nightly.yml/badge.svg" alt="Build Status"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License: MIT"></a>
   <a href="https://store.steampowered.com/app/1285670/Post_Void/"><img src="https://img.shields.io/badge/Steam%20Upstream-v1.4C%20Parity-blue" alt="Upstream Version"></a>
-  <a href="https://github.com/SanGraphic/PostVoidMobile/actions"><img src="https://img.shields.io/badge/Nightly%20Builds-Passing-success" alt="Nightly Builds"></a>
   <a href="#graphical-api--hardware-requirements"><img src="https://img.shields.io/badge/Performance-Native%20Full%20Speed%20(0%20Emulation)-purple" alt="Native Full Speed"></a>
   <a href="#credits--acknowledgements"><img src="https://img.shields.io/badge/Touch%20Graphics-Hand--Made%20by%20%40SanGraphic-orange" alt="Touch Graphics"></a>
 </p>
@@ -125,6 +126,17 @@ This repository features an automated GitHub Actions CI pipeline that builds the
 * **Trigger**: Weekly (every Sunday at 00:00 UTC) + on git push to `main`
 * **Workflow**: `.github/workflows/nightly.yml`
 * **Artifacts**: Tested release APKs and SHA256 checksums automatically published to **[GitHub Releases (Nightly)](https://github.com/SanGraphic/PostVoidMobile/releases)**.
+
+---
+
+## Community & Contributing
+
+Contributions, device compatibility reports, and feedback are warmly welcomed!
+
+* **[Contributing Guidelines](CONTRIBUTING.md)**: Rules for contributing code, development setup, and code standards.
+* **[Submit a Device Compatibility Report](https://github.com/SanGraphic/PostVoidMobile/issues/new?template=device_compatibility.yml)**: Help us build the community verified hardware list!
+* **[Report a Bug](https://github.com/SanGraphic/PostVoidMobile/issues/new?template=bug_report.yml)**: Found an issue? Open a ticket with your device specs and logs.
+* **[License](LICENSE)**: MIT License with third-party intellectual property and BYOD disclaimer.
 
 ---
 

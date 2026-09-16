@@ -1,0 +1,33 @@
+name: "Feature Request"
+description: "Suggest an idea or enhancement for PostVoid Mobile"
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea to make PostVoid Mobile even better? We welcome suggestions that align with maintaining authentic Steam parity and high performance!
+
+  - type: textarea
+    id: feature_summary
+    attributes:
+      label: "Feature Proposal"
+      description: "A clear and concise description of what feature or enhancement you would like to see."
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_or_use_case
+    attributes:
+      label: "Use Case / Problem Solved"
+      description: "Explain why this would be valuable to players."
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives_considered
+    attributes:
+      label: "Alternatives Considered"
+      description: "Any alternative solutions or workarounds you have considered."
+    validations:
+      required: false

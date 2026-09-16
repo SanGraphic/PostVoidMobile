@@ -1,0 +1,103 @@
+name: "Bug Report"
+description: "Report an issue, crash, or unexpected behavior in PostVoid Mobile"
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please verify you are using the latest release or nightly build before submitting.
+
+  - type: input
+    id: device_model
+    attributes:
+      label: "Device Model"
+      description: "e.g., Xiaomi 9T, OnePlus 12, Poco F5, Samsung Galaxy S23"
+      placeholder: "e.g., Xiaomi 9T (davinci)"
+    validations:
+      required: true
+
+  - type: input
+    id: soc_gpu
+    attributes:
+      label: "Chipset & GPU"
+      description: "e.g., Snapdragon 730 / Adreno 618, Dimensity 8200 / Mali-G610"
+      placeholder: "e.g., Snapdragon 8 Gen 3 / Adreno 750"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: android_version
+    attributes:
+      label: "Android Version"
+      options:
+        - "Android 15 (SDK 35)"
+        - "Android 14 (SDK 34)"
+        - "Android 13 (SDK 33)"
+        - "Android 12 (SDK 31/32)"
+        - "Android 11 (SDK 30)"
+        - "Android 10 (SDK 29)"
+        - "Android 9 or older (SDK 24-28)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: display_refresh_rate
+    attributes:
+      label: "Display Refresh Rate"
+      options:
+        - "60 Hz"
+        - "90 Hz"
+        - "120 Hz"
+        - "144 Hz or higher"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: control_method
+    attributes:
+      label: "Input Method Used"
+      options:
+        - "Touch HUD Controls"
+        - "Physical Bluetooth Gamepad"
+        - "Physical USB Type-C Controller (e.g. Backbone, Kishi, Gamesir)"
+        - "Keyboard / Mouse"
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug_description
+    attributes:
+      label: "Description of the Bug"
+      description: "A clear and concise description of what the problem is."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction_steps
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Step-by-step instructions to trigger the issue."
+      placeholder: |
+        1. Launch Post Void BYOD
+        2. Tap ...
+        3. Observe crash / glitch ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: "Expected Behavior"
+      description: "What you expected to happen."
+    validations:
+      required: false
+
+  - type: textarea
+    id: logcat_output
+    attributes:
+      label: "Logcat / Debug Output"
+      description: "Attach relevant lines from `adb logcat -s MainActivity GamepadBridge TouchOverlayView` if available."
+      render: shell
+    validations:
+      required: false

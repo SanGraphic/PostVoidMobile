@@ -49,6 +49,7 @@ local.properties
 .externalNativeBuild/
 
 # Logs, Dumps & Temp Files
+archive/
 *.log
 *.tmp
 *.bak
